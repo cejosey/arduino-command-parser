@@ -62,9 +62,11 @@ public:
 	void processParserError( const __FlashStringHelper * parErrorMessage);
 	void showDebugInfo();
 	int getParameterInt(uint8_t paramParamNo);
+	float getParameterFloat(uint8_t paramParamNo);
 	char *getParameterString(uint8_t paramParamNo);
 	char getParameterChar(uint8_t paramParamNo);
 	int stringToInt(char * parString);
+	float stringToFloat(char * parString);
 	char waitForSingleChar( const __FlashStringHelper * parMessage);
 private:
 	

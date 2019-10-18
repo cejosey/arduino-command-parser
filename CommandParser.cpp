@@ -297,6 +297,13 @@ int SerialCommandParser::getParameterInt(uint8_t paramParamNo){
 //======================================
 //
 //======================================
+float SerialCommandParser::getParameterFloat(uint8_t paramParamNo){
+	checkParameterNoOrHalt(paramParamNo);	
+	return stringToFloat(parameters[paramParamNo]);
+}
+//======================================
+//
+//======================================
 char SerialCommandParser::getParameterChar(uint8_t paramParamNo){
 	checkParameterNoOrHalt(paramParamNo);	
 	return parameters[paramParamNo][0];
@@ -340,6 +347,51 @@ Serial.println(curChar);
 			cursorPosition++;
 		}
 		result*=aSign;
+		return result;
+}
+//======================================
+//
+//======================================
+float SerialCommandParser::stringToFloat(char * parString){
+		int decimalPoint = 0;
+		bool foundDecimal = false;
+		float result=0.0;
+		char curChar;
+		char curDigit;
+		char aSign=1; //1 or -1
+		size_t cursorPosition=0;
+		while (parString[cursorPosition] != '\0')
+		{
+			curChar=parString[cursorPosition];
+			curDigit=curChar-'0';
+			
+			if(foundDecimal)
+			{
+				decimalPoint++;
+			
+			}
+			if(!foundDecimal && curChar == '.')
+			{
+				foundDecimal = true;
+				cursorPosition++;  // skip decimal
+				continue;
+			}
+
+			if ((cursorPosition==0) && (curChar=='-')){
+				//==first char is '-' - negative value
+				aSign=-1;
+				curDigit=0;
+			}else if ((curDigit<0)||(curDigit>9)){
+				//it's not a number (contains non-digital chars)
+				return(SERCMDPARSER__INTEGER_NULLVALUE);
+			}
+			result*=10;
+			result+= curDigit; //convert char (number) to binary digit value
+			cursorPosition++;
+		}
+		result /= (float)pow(10.0, decimalPoint);
+		result*=aSign;
+
 		return result;
 }
 //======================================
